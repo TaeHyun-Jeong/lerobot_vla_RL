@@ -15,7 +15,7 @@ VLA(Vision-Language-Action)와 강화학습(RL)을 결합하여 **주변 작업 
 
 ## 🎥 Final Demo
 
-!(vla_deploy.gif)
+![VLA Demo](vla_deploy.gif)
 
 ---
 

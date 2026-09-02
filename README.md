@@ -1,6 +1,6 @@
 # 🤖 VLA & RL 기반 작업 환경 어시스턴트 로봇
 
-> 🥇 **2026 국민대학교 전자공학 창의설계 경진대회 금상**
+> 🥇 **2026 국민대학교 전자공학 창의설계 경진대회 금상 수상**
 
 VLA(Vision-Language-Action)와 강화학습(RL)을 결합하여 **주변 작업 환경을 인식하고, 상황에 맞는 정리 작업을 스스로 결정하여 수행하는 로봇**을 구현했습니다.
 
@@ -33,27 +33,9 @@ VLA(Vision-Language-Action)와 강화학습(RL)을 결합하여 **주변 작업 
    Robot Action
 ```
 
-하지만 실제 작업 환경에서는 사용자가 **어떤 물체를 어느 수납공간에 넣을지 일일이 명령해야 하는 불편함**이 발생합니다.
+하지만 사용자가 **어떤 물체를 어느 수납공간에 넣을지 일일이 명령해야 하는 불편함**이 발생합니다.
 
 이를 해결하기 위해 **RL을 상위 의사결정 계층으로 추가하여 정리 작업을 스스로 결정**하도록 구성했습니다.
-
-```text
-Camera
-  ↓
-YOLO Detection
-  ↓
-RL Observation
-  ↓
-RL Model
-  ↓
-Object → Target Bin
-  ↓
-Natural Language Command
-  ↓
-Object-specific VLA Policy
-  ↓
-LeRobot Robot Arm
-```
 
 즉,
 
@@ -66,7 +48,7 @@ LeRobot Robot Arm
 ```text
 Camera
   ↓
-YOLO
+YOLO Detection
   ↓
 RL Observation
   ↓
@@ -129,7 +111,7 @@ Robot Execution
 
 # 🎯 Custom RL Environment
 
-실제 로봇에서 바로 강화학습을 수행하는 대신, **Gymnasium 기반의 Custom RL Environment를 직접 구성**하여 RL 모델을 학습했습니다.
+실제 로봇에서 바로 강화학습을 학습하는 대신, **Gymnasium 기반의 Custom RL Environment를 직접 구성**하여 RL 모델을 학습했습니다.
 
 환경에는 다음 요소를 포함했습니다.
 
@@ -139,6 +121,7 @@ Robot Execution
 - 수납공간의 현재 무게
 - 물체별 무게 및 수납공간 최대 용량
 - 로봇 팔 위치
+- 수납 공간의 위치
 
 ---
 
@@ -146,13 +129,7 @@ Robot Execution
 
 RL은 이미지 자체를 입력으로 사용하는 대신, 현재 작업 환경을 **수치 벡터 형태의 Observation**으로 변환하여 사용합니다.
 
-각 물체는 다음과 같이 표현합니다.
-
-```text
-(x, y, existence)
-```
-
-4개의 물체 정보와 4개의 수납공간 무게를 사용하여 최종 Observation을 **16차원 벡터**로 구성했습니다.
+각 물체는 (x, y, existence)의 3개 값으로 표현하고, 4개의 수납공간은 각각 현재 무게를 사용하여 최종 Observation을 **16차원 벡터**로 구성했습니다.
 
 ```text
 Object Positions & Existence : 12
@@ -260,38 +237,6 @@ Detection 결과는 RL에서 사용할 수 있는 Observation 형태로 변환�
 
 ---
 
-# 🔄 실제 동작 과정
-
-정리 모드에서는 다음 과정을 반복합니다.
-
-```text
-Camera
-  ↓
-YOLO Object Detection
-  ↓
-RL Observation
-  ↓
-Action Masking
-  ↓
-RL Decision
-  ↓
-Object → Bin
-  ↓
-Natural Language Command
-  ↓
-Object-specific VLA Policy
-  ↓
-Robot Pick & Place
-  ↓
-Environment Update
-  ↓
-반복
-```
-
-정리할 물체가 더 이상 없으면 정리 모드를 종료합니다.
-
----
-
 # 🛠️ Problem Solving
 
 ## 1. Reward 간 균형 문제
@@ -356,8 +301,7 @@ VLA Pipeline과 RL/YOLO의 이미지 처리를 분리하고, **OpenCV를 이용�
 - State / Action 설계
 - Reward 설계 및 튜닝
 - Action Masking
-- Dueling Network / Double DQN 구현
-- RL Training / Deployment
+- Dueling / Double DQN 구현
 
 ### Computer Vision
 
@@ -369,23 +313,10 @@ VLA Pipeline과 RL/YOLO의 이미지 처리를 분리하고, **OpenCV를 이용�
 ### VLA Integration
 
 - RL Decision → VLA Task Command 변환
-- Object별 VLA Policy 선택
-- Policy Preloading
+- Object별 특화된 VLA Policy 선택
 - RL → VLA → LeRobot 실행 Pipeline 연동
 
-> VLA Dataset 구축 및 전체 시스템 구성은 팀원들과 함께 진행했으며, RL 및 YOLO 구현을 담당했습니다.
-
----
-
-# 🌟 Result
-
-본 프로젝트는
-
-> 🥇 **2026 국민대학교 전자공학 창의설계 경진대회 금상**
-
-을 수상했습니다.
-
-최종 시연에서는 **정리 모드(Organizing Mode)**를 중심으로 YOLO가 작업 환경을 인식하고, RL이 정리할 물체와 수납공간을 결정한 뒤, VLA가 실제 로봇 동작을 수행하는 전체 Pipeline을 구현했습니다.
+> VLA Dataset 구축 및 전체 시스템 구성은 팀원들과 함께 진행했습니다.
 
 ---
 

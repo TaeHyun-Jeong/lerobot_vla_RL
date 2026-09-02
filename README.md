@@ -15,9 +15,7 @@ VLA(Vision-Language-Action)와 강화학습(RL)을 결합하여 **주변 작업 
 
 ## 🎥 Final Demo
 
-![Final Demo](assets/final_demo.gif)
-
-> 최종 시연에서는 **정리 모드(Organizing Mode)**를 중심으로 전체 Pipeline을 구현했습니다.
+!(vla_deploy.gif)
 
 ---
 
